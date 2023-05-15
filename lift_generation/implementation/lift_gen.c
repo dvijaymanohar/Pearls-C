@@ -11,8 +11,10 @@
 
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
-#define PI 3.14159265359
+#define PI 3.14159265358979323846
 
 // Define the airfoil geometry.
 struct airfoil_geometry {
@@ -89,7 +91,7 @@ double calculate_lift_coefficient(struct airfoil_geometry *af_cfg) {
   return lift_coefficient;
 }
 
-// Function to calculate lift force
+// Function to calculate lift force using the Bernoulli equation
 double calc_lift_force(double cl, double rho, double v, double chord,
                        double length) {
   // https://www.grc.nasa.gov/www/k-12/rocket/lifteq.html
@@ -106,8 +108,8 @@ double calc_lift_force(double cl, double rho, double v, double chord,
 
 // Function to calculate the air density based on the ambient temperature,
 // humidity and elevation
-double calc_air_density(double temperature, double pressure, double humidity,
-                        double elevation) {
+double calc_air_density(const double temperature, const double pressure,
+                        const double humidity, const double elevation) {
   const double temperatureLapseRate = 0.0065; // K/m
 
   double T = temperature - temperatureLapseRate * elevation;
@@ -118,8 +120,9 @@ double calc_air_density(double temperature, double pressure, double humidity,
 }
 
 // Calculates the fluid velocity around the airfoil
-double calc_wind_speed(double pitot_pressure, double static_pressure,
-                       double fluid_density) {
+double calc_wind_speed(const double pitot_pressure,
+                       const double static_pressure,
+                       const double fluid_density) {
   double dynamic_pressure = pitot_pressure - static_pressure;
 
   double wind_speed = sqrt(2.0 * dynamic_pressure / fabs(fluid_density));
@@ -133,6 +136,83 @@ double calc_wind_speed_pitotTube(double pTotal, double pStatic, double rho) {
   double windSpeed = sqrt((2.0 * deltaP) / rho);
   return windSpeed;
 }
+
+// Function to generate random number within a given range
+double rand_range(double min, double max) {
+  double range = (max - min);
+  double div = RAND_MAX / range;
+  return min + (rand() / div);
+}
+
+double generate_normal(double mean, double std_dev) {
+  double u1 = (double)rand() / RAND_MAX;
+  double u2 = (double)rand() / RAND_MAX;
+  double z = sqrt(-2 * log(u1)) * cos(2 * PI * u2);
+  return mean + std_dev * z;
+}
+
+double generate_uniform(double a, double b) {
+  double u = (double)rand() / RAND_MAX;
+  return a + (b - a) * u;
+}
+
+double generate_elevation(double mean, double std_dev) {
+  double elevation = generate_normal(mean, std_dev);
+  while (elevation < 0) {
+    elevation = generate_normal(mean, std_dev);
+  }
+  return elevation;
+}
+
+double generate_temperature(double mean, double std_dev) {
+  return generate_normal(mean, std_dev);
+}
+
+double generate_humidity(double mean, double std_dev) {
+  double humidity = generate_normal(mean, std_dev);
+  if (humidity < 0) {
+    humidity = 0;
+  } else if (humidity > 100) {
+    humidity = 100;
+  }
+  return humidity;
+}
+
+// Empirical distributions for measurement uncertainties
+double pitot_uncertainty() {
+  return fabs(0.05 * sin(2 * PI * rand() / RAND_MAX));
+}
+
+double temp_uncertainty() {
+  return fabs(1.0 * sin(2 * PI * rand() / RAND_MAX));
+}
+
+double hum_uncertainty() {
+  return fabs(0.01 * sin(2 * PI * rand() / RAND_MAX));
+}
+
+double elev_uncertainty() {
+  return fabs(5.0 * sin(2 * PI * rand() / RAND_MAX));
+}
+
+/*
+The measurement uncertainties for each parameter will depend on the specific
+situation and available instrumentation. Here are some reasonable estimates
+based on typical uncertainties:
+
+chord: +/- 0.01 m
+pressure: +/- 100 Pa
+temperature: +/- 1.0 C
+humidity: +/- 0.05
+elevation: +/- 10 m
+pitotDiff: +/- 50 Pa
+alpha: +/- 1 degree
+CL: +/- 0.1
+These are just rough estimates and will vary depending on the specific situation
+and instrumentation used. It's always a good idea to consult with experts in the
+field to determine the appropriate uncertainties for your specific case.
+
+*/
 
 int main(int argc, char *argv[]) {
   // Define the airfoil geometry.
@@ -158,6 +238,11 @@ int main(int argc, char *argv[]) {
       .pitot_elevation = 110.0,   // elevation of Pitot tube above sea level (m)
   };
 
+  // Define environmental parameters and their measurement uncertainties
+  // double elevation = generate_elevation(500.0, 50.0); // meters above sea
+  // level double temperature = generate_temperature(15.0, 2.0); // Celsius
+  // double humidity = generate_humidity(50.0, 10.0);      // percentage
+
   // Calculations
   double lift_coeff = calculate_lift_coefficient(&airfoil_cfg);
 
@@ -180,3 +265,38 @@ int main(int argc, char *argv[]) {
 
   return 0;
 }
+
+/**
+  // Define uncertainties for each parameter using empirical distributions
+  double air_density_uncertainty =
+      (rand() % 11 + 90) / 100.0; // randomly choose a value between 0.9 and 1.0
+
+  double air_velocity_uncertainty =
+      (rand() % 11 + 95) /
+      100.0; // randomly choose a value between 0.95 and 1.05
+
+  double air_pressure_uncertainty =
+      (rand() % 201 + 900) /
+      1000.0; // randomly choose a value between 0.9 and 1.1
+
+  double elevation_uncertainty =
+      (rand() % 21 + 990) /
+      1000.0; // randomly choose a value between 0.99 and 1.01
+
+  double chord_length_uncertainty =
+      (rand() % 11 + 95) /
+      100.0; // randomly choose a value between 0.95 and 1.05
+
+  double angle_of_attack_uncertainty =
+      (rand() % 11 + 95) /
+      100.0; // randomly choose a value between 0.95 and 1.05
+
+  // Apply uncertainties to nominal parameters
+  air_density *= air_density_uncertainty;
+  air_velocity *= air_velocity_uncertainty;
+  air_pressure *= air_pressure_uncertainty;
+  elevation *= elevation_uncertainty;
+  chord_length *= chord_length_uncertainty;
+  angle_of_attack *= angle_of_attack_uncertainty;
+ *
+ */
