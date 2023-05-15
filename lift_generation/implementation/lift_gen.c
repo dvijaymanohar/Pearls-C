@@ -40,7 +40,7 @@ struct fluid_properties {
 };
 
 struct parameter_uncertainties {
-  // Uniform distribution
+  // Uniform distribution: Tolerance of 2%
   double chord_length;
   double camber;
   double thickness;
@@ -51,10 +51,22 @@ struct parameter_uncertainties {
   double elevation;       // elevation above sea level (m)
 
   // Non uniform emperical distribution
+
+  // Pa, +/- 1000 Pa (source:
+  // https://www.engineeringtoolbox.com/standard-atmosphere-d_604.html)
   double pitot_pressure; // pressure measured by Pitot tube (Pa)
-  double pressure;       // atmospheric pressure
-  double temperature;    // ambient temperature (Kelvin)
-  double humidity;       // relative humidity
+
+  // Pa, +/- 1000 Pa (source:
+  // https://www.engineeringtoolbox.com/standard-atmosphere-d_604.html)
+  double pressure; // atmospheric pressure
+
+  // deg C, +/- 1 deg C (source:
+  // https://www.engineeringtoolbox.com/air-properties-d_156.html)
+  double temperature; // ambient temperature (Kelvin)
+
+  // %, +/- 5% (source:
+  // https://www.engineeringtoolbox.com/humidity-ratio-d_585.html)
+  double humidity; // relative humidity
 };
 
 // Function to calculate the lift coefficient
