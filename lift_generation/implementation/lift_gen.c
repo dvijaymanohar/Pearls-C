@@ -40,23 +40,21 @@ struct fluid_properties {
 };
 
 struct parameter_uncertainties {
-  // Liftfoil measurement uncertainties
+  // Uniform distribution
   double chord_length;
   double camber;
   double thickness;
   double angle_of_attack;
   double leading_edge_radius;
   double airfoil_length;
-
-  // Pitot tube measurement uncertainties
-  double pitot_pressure;  // pressure measured by Pitot tube (Pa)
   double pitot_elevation; // elevation of Pitot tube above sea level (m)
+  double elevation;       // elevation above sea level (m)
 
-  // atmospheric properties uncertainties
-  double pressure;    // atmospheric pressure
-  double temperature; // ambient temperature (Kelvin)
-  double elevation;   // elevation above sea level (m)
-  double humidity;    // relative humidity
+  // Non uniform emperical distribution
+  double pitot_pressure; // pressure measured by Pitot tube (Pa)
+  double pressure;       // atmospheric pressure
+  double temperature;    // ambient temperature (Kelvin)
+  double humidity;       // relative humidity
 };
 
 // Function to calculate the lift coefficient
@@ -137,6 +135,59 @@ double calc_wind_speed_pitotTube(double pTotal, double pStatic, double rho) {
   return windSpeed;
 }
 
+int main(int argc, char *argv[]) {
+  // Define the airfoil geometry.
+  struct airfoil_geometry airfoil_cfg = {
+      .chord_length = 1.0,
+      .airfoil_length = 10, // airfoil length (m)
+      .angle_of_attack = 4, // angle of attack (degrees). aka alpha
+      .camber = 0.05,
+      .thickness = 0.15,
+  };
+
+  // Define the fluid properties.
+  struct fluid_properties atmosphere_cfg = {
+      .pressure = 101325.0, // atmospheric pressure
+      .temperature = 281.5, // ambient temperature (Kelvin)
+      .elevation = 100,     // elevation above sea level (m)
+      .humidity = 0.5,      // relative humidity
+  };
+
+  // Define the Pitot tube properties.
+  struct pitot_tube_properties pitot_tube_cfg = {
+      .pitot_pressure = 110000.0, // pressure measured by Pitot tube (Pa)
+      .pitot_elevation = 110.0,   // elevation of Pitot tube above sea level (m)
+  };
+
+  // Define environmental parameters and their measurement uncertainties
+  // double elevation = generate_elevation(500.0, 50.0); // meters above sea
+  // level double temperature = generate_temperature(15.0, 2.0); // Celsius
+  // double humidity = generate_humidity(50.0, 10.0);      // percentage
+
+  // Calculations
+  double lift_coeff = calculate_lift_coefficient(&airfoil_cfg);
+
+  double air_density = calc_air_density(
+      atmosphere_cfg.temperature, pitot_tube_cfg.pitot_pressure,
+      atmosphere_cfg.humidity, pitot_tube_cfg.pitot_elevation);
+
+  double wind_speed = calc_wind_speed(pitot_tube_cfg.pitot_pressure,
+                                      atmosphere_cfg.pressure, air_density);
+
+  double lift_force =
+      calc_lift_force(lift_coeff, air_density, wind_speed,
+                      airfoil_cfg.chord_length, airfoil_cfg.airfoil_length);
+
+  // Output
+  printf("Air density: %lf kg/m^3\n", air_density);
+  printf("Wind speed: %lf m/s\n", wind_speed);
+  printf("Lift coefficient: %lf\n", lift_coeff);
+  printf("Lift force: %lf N\n", lift_force);
+
+  return 0;
+}
+
+#if 0
 // Function to generate random number within a given range
 double rand_range(double min, double max) {
   double range = (max - min);
@@ -194,8 +245,10 @@ double hum_uncertainty() {
 double elev_uncertainty() {
   return fabs(5.0 * sin(2 * PI * rand() / RAND_MAX));
 }
+#endif
 
-/*
+/**
+
 The measurement uncertainties for each parameter will depend on the specific
 situation and available instrumentation. Here are some reasonable estimates
 based on typical uncertainties:
@@ -212,91 +265,34 @@ These are just rough estimates and will vary depending on the specific situation
 and instrumentation used. It's always a good idea to consult with experts in the
 field to determine the appropriate uncertainties for your specific case.
 
-*/
 
-int main(int argc, char *argv[]) {
-  // Define the airfoil geometry.
-  struct airfoil_geometry airfoil_cfg = {
-      .chord_length = 1.0,
-      .airfoil_length = 10, // airfoil length (m)
-      .angle_of_attack = 4, // angle of attack (degrees). aka alpha
-      .camber = 0.05,
-      .thickness = 0.15,
-  };
 
-  // Define the fluid properties.
-  struct fluid_properties atmosphere_cfg = {
-      .pressure = 101325.0, // atmospheric pressure
-      .temperature = 281.5, // ambient temperature (Kelvin)
-      .elevation = 100,     // elevation above sea level (m)
-      .humidity = 0.5,      // relative humidity
-  };
+// Define uncertainties for each parameter using empirical distributions
+double air_density_uncertainty =
+    (rand() % 11 + 90) / 100.0; // randomly choose a value between 0.9 and 1.0
 
-  // Define the Pitot tube properties.
-  struct pitot_tube_properties pitot_tube_cfg = {
-      .pitot_pressure = 110000.0, // pressure measured by Pitot tube (Pa)
-      .pitot_elevation = 110.0,   // elevation of Pitot tube above sea level (m)
-  };
+double air_velocity_uncertainty =
+    (rand() % 11 + 95) / 100.0; // randomly choose a value between 0.95 and 1.05
 
-  // Define environmental parameters and their measurement uncertainties
-  // double elevation = generate_elevation(500.0, 50.0); // meters above sea
-  // level double temperature = generate_temperature(15.0, 2.0); // Celsius
-  // double humidity = generate_humidity(50.0, 10.0);      // percentage
+double air_pressure_uncertainty =
+    (rand() % 201 + 900) /
+    1000.0; // randomly choose a value between 0.9 and 1.1
 
-  // Calculations
-  double lift_coeff = calculate_lift_coefficient(&airfoil_cfg);
+double elevation_uncertainty =
+    (rand() % 21 + 990) /
+    1000.0; // randomly choose a value between 0.99 and 1.01
 
-  double air_density = calc_air_density(
-      atmosphere_cfg.temperature, pitot_tube_cfg.pitot_pressure,
-      atmosphere_cfg.humidity, pitot_tube_cfg.pitot_elevation);
+double chord_length_uncertainty =
+    (rand() % 11 + 95) / 100.0; // randomly choose a value between 0.95 and 1.05
 
-  double wind_speed = calc_wind_speed(pitot_tube_cfg.pitot_pressure,
-                                      atmosphere_cfg.pressure, air_density);
+double angle_of_attack_uncertainty =
+    (rand() % 11 + 95) / 100.0; // randomly choose a value between 0.95 and 1.05
 
-  double lift_force =
-      calc_lift_force(lift_coeff, air_density, wind_speed,
-                      airfoil_cfg.chord_length, airfoil_cfg.airfoil_length);
-
-  // Output
-  printf("Air density: %lf kg/m^3\n", air_density);
-  printf("Wind speed: %lf m/s\n", wind_speed);
-  printf("Lift coefficient: %lf\n", lift_coeff);
-  printf("Lift force: %lf N\n", lift_force);
-
-  return 0;
-}
-
-/**
-  // Define uncertainties for each parameter using empirical distributions
-  double air_density_uncertainty =
-      (rand() % 11 + 90) / 100.0; // randomly choose a value between 0.9 and 1.0
-
-  double air_velocity_uncertainty =
-      (rand() % 11 + 95) /
-      100.0; // randomly choose a value between 0.95 and 1.05
-
-  double air_pressure_uncertainty =
-      (rand() % 201 + 900) /
-      1000.0; // randomly choose a value between 0.9 and 1.1
-
-  double elevation_uncertainty =
-      (rand() % 21 + 990) /
-      1000.0; // randomly choose a value between 0.99 and 1.01
-
-  double chord_length_uncertainty =
-      (rand() % 11 + 95) /
-      100.0; // randomly choose a value between 0.95 and 1.05
-
-  double angle_of_attack_uncertainty =
-      (rand() % 11 + 95) /
-      100.0; // randomly choose a value between 0.95 and 1.05
-
-  // Apply uncertainties to nominal parameters
-  air_density *= air_density_uncertainty;
-  air_velocity *= air_velocity_uncertainty;
-  air_pressure *= air_pressure_uncertainty;
-  elevation *= elevation_uncertainty;
-  chord_length *= chord_length_uncertainty;
-  angle_of_attack *= angle_of_attack_uncertainty;
- *
- */
+// Apply uncertainties to nominal parameters
+air_density *= air_density_uncertainty;
+air_velocity *= air_velocity_uncertainty;
+air_pressure *= air_pressure_uncertainty;
+elevation *= elevation_uncertainty;
+chord_length *= chord_length_uncertainty;
+angle_of_attack *= angle_of_attack_uncertainty;
+**/

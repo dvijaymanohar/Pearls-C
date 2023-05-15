@@ -21,19 +21,20 @@ In the context of the Bernoulli equation applied to the lift generation of an ai
 
 The Pitot tube is a device used to measure the velocity of a fluid flow in a pipe or a duct. It consists of a tube pointed directly into the fluid flow, with a second tube connected to a pressure gauge or transducer. The various parameters of a Pitot tube include:
 
-Velocity pressure: The difference between the stagnation pressure (pressure measured at the tip of the tube) and the static pressure (pressure measured through the side holes of the tube).
+**Velocity pressure**: The difference between the stagnation pressure (pressure measured at the tip of the tube) and the static pressure (pressure measured through the side holes of the tube).
 Static pressure: The pressure of the fluid at rest.
 Stagnation pressure: The pressure measured at the tip of the tube where the fluid flow is at a maximum velocity and zero pressure.
 Total pressure: The sum of stagnation pressure and static pressure.
 Angle of incidence: The angle at which the Pitot tube is inserted into the fluid flow.
-Diameter of the tube: The diameter of the Pitot tube affects the velocity pressure and the response time of the gauge.
+
+**Diameter of the tube**: The diameter of the Pitot tube affects the velocity pressure and the response time of the gauge.
 Temperature: The temperature of the fluid affects the density and viscosity of the fluid, which in turn affects the velocity measurement.
 
 ## Unifom distribution
 
 A uniform distribution is a probability distribution where every possible value within a given range has an equal chance of being selected. In other words, the probability of selecting a specific value within the range is proportional to the range width. A uniform distribution is often used when the value of the quantity being modeled is unknown, and there is no reason to assume that any value is more likely than any other value. For example, rolling a fair six-sided die is an example of a uniform distribution since each possible outcome has an equal chance of occurring. The probability density function for a uniform distribution is constant within the range and zero outside the range.
 
-## Non-Unifomorphic distribution
+## Non-Uniform distribution
 
 A non-uniform empirical distribution is a type of probability distribution that is based on observed data, rather than on a mathematical formula. It describes the frequency or likelihood of different values or ranges of values that a variable may take, based on data that has been collected or observed. Non-uniform empirical distributions can take many forms, such as histograms, frequency tables, or cumulative distribution functions, and can be used to model a wide range of real-world phenomena in fields such as economics, finance, biology, and physics. Unlike uniform distributions, which assume that all values within a range are equally likely, non-uniform empirical distributions can have varying probabilities for different values or ranges of values, based on the data used to construct them.
 
