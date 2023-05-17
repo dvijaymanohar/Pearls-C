@@ -34,23 +34,47 @@ Temperature: The temperature of the fluid affects the density and viscosity of t
 
 A uniform distribution is a probability distribution where every possible value within a given range has an equal chance of being selected. In other words, the probability of selecting a specific value within the range is proportional to the range width. A uniform distribution is often used when the value of the quantity being modeled is unknown, and there is no reason to assume that any value is more likely than any other value. For example, rolling a fair six-sided die is an example of a uniform distribution since each possible outcome has an equal chance of occurring. The probability density function for a uniform distribution is constant within the range and zero outside the range.
 
+A uniform distribution, also known as a rectangular distribution, is a probability distribution in which all outcomes within a given range are equally likely to occur. In other words, it is a continuous probability distribution where each value in a given interval has the same probability of being observed.
+
+In a uniform distribution, the probability density function (PDF) is constant within the range of the distribution and zero outside that range. The PDF is defined as:
+
+> f(x) = 1 / (b - a) for a ≤ x ≤ b,
+
+where 'a' and 'b' are the minimum and maximum values of the distribution, respectively.
+
+The cumulative distribution function (CDF) for a uniform distribution is given by:
+
+> F(x) = (x - a) / (b - a) for a ≤ x ≤ b,
+
+where F(x) represents the probability that a random variable X is less than or equal to x.
+
+The uniform distribution is often used as a simple model when all outcomes within a given range are equally likely. It is commonly employed in simulations, random number generation, and certain statistical analyses where the assumption of equal probability is appropriate.
+
 ## Non-Uniform distribution
 
 A non-uniform empirical distribution is a type of probability distribution that is based on observed data, rather than on a mathematical formula. It describes the frequency or likelihood of different values or ranges of values that a variable may take, based on data that has been collected or observed. Non-uniform empirical distributions can take many forms, such as histograms, frequency tables, or cumulative distribution functions, and can be used to model a wide range of real-world phenomena in fields such as economics, finance, biology, and physics. Unlike uniform distributions, which assume that all values within a range are equally likely, non-uniform empirical distributions can have varying probabilities for different values or ranges of values, based on the data used to construct them.
+
+A non-uniform empirical distribution refers to a probability distribution that is derived from observed data and does not follow a uniform distribution. Unlike a uniform distribution where all outcomes within a range are equally likely, a non-uniform empirical distribution assigns varying probabilities to different outcomes based on the observed frequencies or proportions of those outcomes in the data.
+
+To create a non-uniform empirical distribution, you start with a dataset and calculate the empirical probabilities for each unique value or interval in the data. The empirical probability of an outcome is the proportion of times it occurs in the dataset relative to the total number of observations.
+
+Once you have the empirical probabilities, you can construct a discrete or continuous probability distribution that represents the observed data. In a discrete case, you assign the empirical probabilities to each unique value in the dataset, creating a probability mass function (PMF). In a continuous case, you may group the data into intervals and assign probabilities to those intervals, creating a probability density function (PDF).
+
+Non-uniform empirical distributions are useful when you want to model and analyze data that does not follow a known theoretical distribution (such as a normal or uniform distribution) or when you want to capture the specific characteristics of the observed data. They allow you to incorporate the actual frequencies or proportions of the data into your analysis and make more accurate predictions or estimations based on the observed patterns.
 
 ## Data uncertainties
 
 Data uncertainties refer to the extent to which data is incomplete, imprecise, or uncertain. In other words, it refers to the degree of confidence or trust we have in the data and the accuracy of the information it contains. There are different types of data uncertainties, including:
 
-Measurement uncertainty: This occurs when there is a lack of accuracy or precision in the measurement process, leading to errors in the data.
+- Measurement uncertainty: This occurs when there is a lack of accuracy or precision in the measurement process, leading to errors in the data.
 
-Sampling uncertainty: This occurs when the sample used to collect data is not representative of the population, leading to biased results.
+- Sampling uncertainty: This occurs when the sample used to collect data is not representative of the population, leading to biased results.
 
-Model uncertainty: This occurs when the mathematical or statistical model used to analyze the data is not an accurate representation of the real-world situation.
+- Model uncertainty: This occurs when the mathematical or statistical model used to analyze the data is not an accurate representation of the real-world situation.
 
-Data processing uncertainty: This occurs when errors or inconsistencies are introduced during the data processing phase, such as during data cleaning, transformation, or integration.
+- Data processing uncertainty: This occurs when errors or inconsistencies are introduced during the data processing phase, such as during data cleaning, transformation, or integration.
 
-Natural variability: This occurs when there is inherent variability or randomness in the system being studied, leading to uncertainty in the data.
+- Natural variability: This occurs when there is inherent variability or randomness in the system being studied, leading to uncertainty in the data.
 
 Overall, data uncertainties are an important consideration when interpreting and analyzing data, as they can affect the validity and reliability of the results. It is important to quantify and communicate these uncertainties to ensure that the conclusions drawn from the data are accurate and trustworthy.
 
